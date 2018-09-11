@@ -69,6 +69,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func closePorts() {
+        if #available(OSX 10.14, *) {
+            let targetAppEventDescriptor = NSAppleEventDescriptor.init(bundleIdentifier: "com.apple.Terminal")
+            let status: OSStatus = AEDeterminePermissionToAutomateTarget(targetAppEventDescriptor.aeDesc, typeWildCard, typeWildCard, true)
+            print("Status is \(status)")
+        }
+
         let str = "tell application \"Terminal\" to do script \"lsof -ti:8080 | xargs kill\""
         let appleScript = NSAppleScript.init(source: str)
         var dict: NSDictionary?
