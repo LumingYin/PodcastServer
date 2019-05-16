@@ -52,12 +52,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func getIPV4IP() -> String {
         let addresses = getIFAddresses()
+        var v4Addresses : [String] = ["127.0.0.1"]
         for add in addresses {
             if (add.contains(".")) {
-                return add
+                v4Addresses.append(add)
             }
         }
-        return "127.0.0.1"
+        return v4Addresses.last!
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -256,7 +257,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         var dict: NSDictionary?
         appleScript?.executeAndReturnError(&dict)
         print(dict ?? "No error")
-        addPodcastField.stringValue = "Add podcast at: http://\(serverAddressTextField.stringValue)/\(antiCachingField.stringValue)"
+        let linkURL = "http://\(serverAddressTextField.stringValue)/\(antiCachingField.stringValue)"
+        addPodcastField.stringValue = "Add podcast at: \(linkURL)"
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(linkURL, forType: .string)
     }
     
     func secondsToHoursMinutesSeconds (seconds : Int) -> (Int, Int, Int) {
